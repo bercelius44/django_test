@@ -18,7 +18,7 @@ class UserProfileManager(BaseUserManager):
 
         return user
     
-    def create_super_user(self, email, name, password):
+    def create_superuser(self, email, name, password):
         """Create a new super user profile."""
         user = self.create_user(email, name, password)
 
@@ -44,3 +44,12 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Return string representation of a user."""
         return self.email
+
+
+class Order(models.Model):
+    """Database model for track all orders."""
+    date = models.DateField()
+    time = models.CharField(max_length = 5)
+    pick_up_place = models.CharField(max_length = 7)
+    delivery_place = models.CharField(max_length = 7)
+    driver = models.IntegerField()
