@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from core import serializers
+from core.models import Order
 
 
 class AboutApiView(APIView):
@@ -35,9 +36,48 @@ class ScheduleApiView(APIView):
         time = serializers.validated_data.get('time')
         pick_up_place = serializers.validated_data.get('pick_up_place')
         delivery_place = serializers.validated_data.get('delivery_place')
-        driver = serializers.validated_data.get('driver')
+        driver = serializers.validated_data.get('driver')       
+
+        # order = Order(pk=driver, date=date, time=time, pick_up_place=pick_up_place,  
+        #                 delivery_place=delivery_place, driver=driver)
+
+        # order.save()
+        order = Order.objects.get(pk=driver)
+        order.pick_up_place = pick_up_place
+        order.save()
+
         message = f'Data: {date}, {time}, {pick_up_place}, {delivery_place}, {driver}'
         
         return Response({'message': message})
+
+
+class GetOrdersByDay(APIView):
+    """Endpoint to get all orders in a specific day."""
+
+    def get(self, request, format = None):
+        """Return the list of all orders for a specific day."""
+        orders = Order.objects.all()
+
+        return Response({'message': orders})
+        
+
+class GetOrdersByDriver(APIView):
+    """Endpoint to get all orders for one driver in a specific day."""
+
+    def get(self, request, format = None):
+        """Return the list of all orders for a driver in a specific day."""
+        orders = Order.objects.all()
+
+        return Response({'message': orders})
+
+
+class GetClosestDriver(APIView):
+    """Endpoint to get the closest driver to a certain point."""
+
+    def get(self, request, format = None):
+        """Return the closest driver to a certain point acording to his availability."""
+        orders = Order.objects.all()
+
+        return Response({'message': orders})
         
             

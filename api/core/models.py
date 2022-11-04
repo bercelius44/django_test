@@ -53,3 +53,9 @@ class Order(models.Model):
     pick_up_place = models.CharField(max_length = 7)
     delivery_place = models.CharField(max_length = 7)
     driver = models.IntegerField()
+
+
+class DriverRecord(models.Model):
+    """Database model for the drivers last location."""
+    location = models.CharField(max_length = 7)
+    date = models.CharField(max_length=255)
