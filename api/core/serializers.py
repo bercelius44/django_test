@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.core.exceptions import ValidationError
 
 
 class OrderSerializer(serializers.Serializer):
@@ -53,3 +54,51 @@ class OrderSerializer(serializers.Serializer):
             raise ValidationError(f'{delivery_place} is not in a valid format (0,0 to 100,100)')
         
         return delivery_place
+
+
+class OrdersByDaySerializer(serializers.Serializer):
+    """Serializes a date to get the orders in a specific day."""
+    date = serializers.DateField()
+
+
+class OrdersByDriverSerializer(serializers.Serializer):
+    """Serializes a driver code to get the orders for a specific driver."""
+    date = serializers.DateField()
+    driver = serializers.IntegerField()
+
+
+class ClosestDriverSerializer(serializers.Serializer):
+    """Serializes teh data for getting the closest driver to a location."""
+    date = serializers.DateField()
+    time = serializers.CharField(max_length = 5)
+    location = serializers.CharField(max_length = 7)
+
+    def validate_time(self, time):  
+        """Validates time format (HH:MM)"""      
+        if ":" not in time or len(time) != 5:
+            raise ValidationError(f'{time} is not in a valid format (HH:MM).')
+        
+        try:
+            if int(time.split(":")[0]) > 23 or int(time.split(":")[1]) > 59:
+                raise ValidationError('')
+        except ValidationError:
+            raise ValidationError(f'{time} is not a valid hour.')
+        except ValueError:
+            raise ValidationError(f'{time} is not in a valid format (HH:MM).')
+        
+        return time
+
+    def validate_location(self, location):
+        """Validates pick up place format (100,100)"""
+        if "," not in location:
+            raise ValidationError(f'{location} is not in a valid format (0,0 to 100,100)')
+
+        try:
+            if int(location.split(",")[0]) > 100 or int(location.split(",")[1]) > 100:
+                raise ValidationError('')
+        except ValidationError:
+            raise ValidationError(f'{location} coordinate out of boundaries from 0,0 to 100,100')
+        except ValueError:
+            raise ValidationError(f'{location} is not in a valid format (0,0 to 100,100)')
+        
+        return location
