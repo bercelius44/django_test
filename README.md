@@ -52,9 +52,9 @@ For the API doc, once Django is running go to.
 http://localhost:8000
 ```
 
-## Docker
+## Installation with Docker
 
-For Docker
+Clone the repository, go to the repository folder and run this commands.
 
 ```bash
 docker build -t django_test .
