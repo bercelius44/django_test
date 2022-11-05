@@ -1,5 +1,6 @@
-from apscheduler.schedulers.background import BackgroundScheduler
 from core.drivers_location.drivers_location_updater import update_drivers_location
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 def start():
     scheduler = BackgroundScheduler()

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_spectacular',
     'core',
 ]
 
@@ -126,3 +127,23 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "core.UserProfile"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Delivery scheduler',
+    'DESCRIPTION': """REST API using Django and Django Rest Framework
+                      \n Features:
+                      \n 1. Schedule an order to a driver for a date and time specifying its pickup and delivery place(lat,lng). 
+                      \n 2. Get all orders scheduled in a specific day.
+                      \n 3. Get all orders a driver has in a specific day.
+                      \n 4. Get the closest driver to a location in a specific date and time.""",
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}

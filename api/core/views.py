@@ -1,28 +1,13 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework import status
 import math
 
-from core import serializers
 from core.models import Order, DriverRecord
+from core import serializers
 
 
-class AboutApiView(APIView):
-    """About the API"""
-
-    def get(self, request, format = None):
-        """Return a list of the API features"""
-        features = [
-            'Agendar un pedido a un conductor en una fecha y hora, y especificar su lugar de recogida (latitud y longitud) y destino.',
-            'Consultar todos los pedidos asignados en un día en específico ordenados por la hora.',
-            'Consultar todos los pedidos de un conductor en un día en específico ordenados por la hora.',
-            'Hacer búsquedas del conductor que esté más cerca de un punto geográfico en una fecha y hora.'
-        ]
-
-        return Response({'message':'About', 'features': features})
-
-
-class ScheduleApiView(APIView):
+class ScheduleOrderView(APIView):
     """Endpoint to schedule a delivery"""
     serializer_class = serializers.OrderSerializer
 
@@ -59,13 +44,13 @@ class ScheduleApiView(APIView):
         return Response({'message': 'Order created'})
 
 
-class GetOrdersByDay(APIView):
+class GetOrdersByDayView(APIView):
     """Endpoint to get all orders in a specific day."""  
-    serializer_class = serializers.OrdersByDaySerializer        
+    serializer_class = serializers.OrdersByDaySerializer    
 
-    def get(self, request, format = None):
-        """Return the list of all orders for a specific day."""  
-        serializers = self.serializer_class(data = request.data)
+    def get(self, request, date):
+        """Return the list of all orders for a specific day.""" 
+        serializers = self.serializer_class(data = {'date': date})
 
         if not serializers.is_valid():
             return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)  
@@ -90,13 +75,13 @@ class GetOrdersByDay(APIView):
         return Response({'orders': day_orders_dic})
         
 
-class GetOrdersByDriver(APIView):
+class GetOrdersByDriverView(APIView):
     """Endpoint to get all orders for one driver in a specific day."""
     serializer_class = serializers.OrdersByDriverSerializer
 
-    def get(self, request, format = None):
+    def get(self, request, date, driver):
         """Return the list of all orders for a driver in a specific day."""
-        serializers = self.serializer_class(data = request.data)
+        serializers = self.serializer_class(data = {'date':date, 'driver':driver})
 
         if not serializers.is_valid():
             return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -123,13 +108,13 @@ class GetOrdersByDriver(APIView):
         return Response({'driver_orders': day_orders_dic})
 
 
-class GetClosestDriver(APIView):
+class GetClosestDriverView(APIView):
     """Endpoint to get the closest driver to a certain point."""
     serializer_class = serializers.ClosestDriverSerializer
 
-    def get(self, request, format = None):
+    def get(self, request, date, time, location):
         """Return the closest driver to a certain point acording to his availability."""
-        serializers = self.serializer_class(data = request.data)
+        serializers = self.serializer_class(data = {'date':date, 'time':time, 'location':location})
 
         if not serializers.is_valid():
             return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -171,5 +156,4 @@ class GetClosestDriver(APIView):
                     driver = item.pk
 
         return Response({'closest_driver': driver})
-        
             
