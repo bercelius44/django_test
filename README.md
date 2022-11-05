@@ -46,7 +46,22 @@ For running test.
 python manage.py test
 ```
 
-For the API doc, onces Django is runnig go to.
+For the API doc, once Django is running go to.
+
+```browser
+http://localhost:8000
+```
+
+## Docker
+
+For Docker
+
+```bash
+docker build -t django_test .
+docker run -d -p 8000:8000 --name django django_test
+```
+
+For the API doc, once Django container is running go to.
 
 ```browser
 http://localhost:8000
